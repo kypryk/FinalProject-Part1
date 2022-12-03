@@ -1,6 +1,6 @@
 import BasePage from "./BasePage";
 
-let resultCaptcha;
+//let resultCaptcha;
 
 class ContactUsPage extends BasePage{
     visit(){
@@ -23,7 +23,18 @@ class ContactUsPage extends BasePage{
         cy.get('#rating').click();
     }
 
-    calculateCaptcha(){ // 5*5+7 = 18!!!!!!!
+    calculateCaptcha(){
+        cy.log('**Canculating captcha**');
+        cy.get('#captcha').invoke('text').then((text) => {
+            const Parser = require('expr-eval').Parser;
+            const parser = new Parser();
+            let expr = parser.evaluate(text);
+            console.log(expr);
+            cy.get('#captchaControl').type(expr);
+        })
+    }
+    
+    /*WRONGcalculateCaptcha(){ // 5*5+7 = 18!!!!!!!
         cy.get('#captcha').invoke('text').then((text) => {
             let Numbers = ["","",""]
             let Operators = ["",""]
@@ -106,7 +117,7 @@ class ContactUsPage extends BasePage{
             //eval executes the code, big security issue
             //let resultCaptcha = eval(text);
         })
-    }
+    }*/
 
 
     clickSubmitButton(){
@@ -114,17 +125,20 @@ class ContactUsPage extends BasePage{
     }
 
     submitContactUsForm(){
+        cy.log('**Submitting Contact Us Form**');
         this.enterValueToCommentField("Test Comment");
         this.selectValue3OnRatingSlider();
         this.calculateCaptcha();
         this.clickSubmitButton();
+        //this.checkSubmitContactUsSuccessMessage()
         /*cy.get('#submitButton').click().then(() => {
-            cy.get('#cdk-overlay-4').should('contain', 'Thank you for your feedback.');
+            cy.get('.cdk-overlay-pane').should('contain', 'Thank you for your feedback.');
         })*/
     }
 
     checkSubmitContactUsSuccessMessage(){
-        return cy.get('#cdk-overlay-4').should('contain', 'Thank you for your feedback.');
+        cy.log('**Checking the success message**');
+        return cy.get('.cdk-overlay-pane').should('contain', 'Thank you for your feedback.');
     }
 }
 export default new ContactUsPage();

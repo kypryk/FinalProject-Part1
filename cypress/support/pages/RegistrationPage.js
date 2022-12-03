@@ -1,6 +1,6 @@
 import BasePage from "./BasePage";
 import {faker} from '@faker-js/faker';
-import userJson from "../../fixtures/user.json"
+import user from "../../fixtures/user.json"
 
 class RegistrationPage extends BasePage{
 
@@ -25,7 +25,7 @@ class RegistrationPage extends BasePage{
         return cy.get('#mat-slide-toggle-1-input');
     }
 
-    getShowPassAdviceToggle(){
+    clickShowPassAdviceToggle(){
         cy.get('#mat-slide-toggle-1-input').click();
     }
 
@@ -56,29 +56,33 @@ class RegistrationPage extends BasePage{
 
     submitRegistrationForm(){
 
-        let user = {
+        let fakerUser = {
             email: faker.internet.email(),
             password: faker.internet.password(8), // <- create pass requirements
             securityAnswer: faker.music.songName()
         }
-        console.log(user)
 
-        this.getEmailField().type(user.email);
-        this.getPasswordField().type(user.password);
-        this.getRepeatPasswordField().type(user.password);
+        let strUser = JSON.stringify(fakerUser)
+
+        console.log(`My Faker user is: (${strUser})`)
+
+        this.getEmailField().type(fakerUser.email);
+        this.getPasswordField().type(fakerUser.password);
+        this.getRepeatPasswordField().type(fakerUser.password);
         this.clickSecurityQuestionField();
         this.clickSecurityQuestionOption();
-        this.getSecurityAnswerField().type(user.securityAnswer);
+        this.getSecurityAnswerField().type(fakerUser.securityAnswer);
         this.clickRegisterButton();
+        
 
         //rewrite user.json for further login
-        userJson.email = user.email;
-        userJson.password = user.password;
-        userJson.securityAnswer = user.securityAnswer;
+        user.email = fakerUser.email;
+        user.password = fakerUser.password;
+        user.securityAnswer = fakerUser.securityAnswer;
 
-        //does it work?? no
-        //userJson.token = window.localStorage.getItem('token');
-        //userJson.bid = window.sessionStorage.getItem('bid');
+        //let strUserJson = JSON.stringify(user)
+        //console.log(`My user.json is (${strUserJson})`)
+        
     }
     
 }

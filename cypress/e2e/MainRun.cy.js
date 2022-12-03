@@ -19,6 +19,15 @@ describe('Registration', () => {
     
     RegistrationPage.submitRegistrationForm();
 
+  })
+
+  it.skip('Registration with invalid email', () => {
+    HomePage.visit();
+    HomePage.clickWelcomeBannerDismissButton();
+
+    HomePage.openRegistrationPage();
+    
+  
 
   })
 })
@@ -31,6 +40,18 @@ describe('Login', () => {
     HomePage.openLoginPage();
 
     LoginPage.submitLoginForm();
+
+    LoginPage.clickNavbarAccountButton();
+    cy.get('[aria-label="Go to user profile"]').should('contain', user.email);
+
+    cy.writeFile('E:/QAAuto/QALightProjects.2nd-try/FinalProject-Part1/cypress/fixtures/user.json', {
+      "email": user.email,
+      "password": user.password,
+      "securityAnswer": user.securityAnswer,
+      "token": "",
+      "bid": ""
+    })
+
   })
 })
 
@@ -71,13 +92,18 @@ describe('Order', () => {
   })
 })
 
-describe.skip('Order with helper', () => {
+describe.only('Order with helper', () => {
   it('Making an order searching it on the homepage', () => {
+
+    loginViaApi();
 
     HomePage.visit();
     HomePage.clickWelcomeBannerDismissButton();
 
-    searchProductOnMainPage();
+    //dismissing cookie
+    cy.get('.cc-compliance').click();
+
+    searchProductOnMainPage("Strawberry Juice (500ml)");
     
   })
 })
@@ -89,5 +115,6 @@ describe('Contact Us', () => {
     ContactUsPage.clickWelcomeBannerDismissButton();
 
     ContactUsPage.submitContactUsForm();
+    ContactUsPage.checkSubmitContactUsSuccessMessage();
   })
 })

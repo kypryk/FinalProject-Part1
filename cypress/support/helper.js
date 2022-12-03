@@ -6,7 +6,7 @@ let requestBody = {
 }
 
 export function loginViaApi(){
-    cy.request('POST', 'http://juice-shop-sanitarskyi.herokuapp.com/rest/user/login', requestBody).then((response) => {
+    cy.request('POST', '/rest/user/login', requestBody).then((response) => {
         user.token = response.body.authentication.token;
         user.bid = response.body.authentication.bid;
     
@@ -21,4 +21,22 @@ export function loginViaApi(){
 
 export function searchProductOnMainPage(productName){
 
+    cy.get('body').then(body => {
+        if(body.find(`div.mat-grid-tile-content:contains(${productName})`).length > 0){
+            cy.get(`div.mat-grid-tile-content:contains(${productName}) [aria-label="Add to Basket"]`).click();
+        }else{
+            cy.get('[aria-label="Next page"]').click();
+            searchProductOnMainPage(productName)
+        }
+    })
+
+    /*let product = cy.get('div.mat-grid-tile-content')
+    if(product == productName){
+        cy.get(`div.mat-grid-tile-content:contains(${productName}) [aria-label="Add to Basket"]`).click();
+        console.log("found")
+    }else{
+        cy.get('[aria-label="Next page"]').click();
+        console.log("didn't found, clicking next")
+        searchProductOnMainPage(productName)
+    }*/
 }

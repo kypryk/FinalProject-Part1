@@ -137,7 +137,7 @@ class CheckoutAdressPage extends BasePage{
     submitPaymentNewCard(){
         this.clickPaymentExpandNewCardButton();
         this.getPaymentNewCardNameField().type(cardFullName); 
-        this.getPaymentNewCardNumberField().type(faker.finance.creditCardNumber('################'));
+        this.getPaymentNewCardNumberField().type(faker.finance.creditCardNumber('4###############'));
         this.selectPaymentNewCardExpirationMonth1stOption();
         this.selectPaymentNewCardExpirationYear1stOption();
         this.clickPaymentNewCardSubmitButton();
