@@ -6,6 +6,7 @@ let requestBody = {
 }
 
 export function loginViaApi(){
+    cy.log('**Login via api, setting cookie, local and session storage**')
     cy.request('POST', '/rest/user/login', requestBody).then((response) => {
         user.token = response.body.authentication.token;
         user.bid = response.body.authentication.bid;
@@ -23,20 +24,13 @@ export function searchProductOnMainPage(productName){
 
     cy.get('body').then(body => {
         if(body.find(`div.mat-grid-tile-content:contains(${productName})`).length > 0){
+            cy.log('**Adding the product to the basket**');
             cy.get(`div.mat-grid-tile-content:contains(${productName}) [aria-label="Add to Basket"]`).click();
         }else{
+            cy.log('**No product here, moving to the next page**');
             cy.get('[aria-label="Next page"]').click();
             searchProductOnMainPage(productName)
         }
     })
 
-    /*let product = cy.get('div.mat-grid-tile-content')
-    if(product == productName){
-        cy.get(`div.mat-grid-tile-content:contains(${productName}) [aria-label="Add to Basket"]`).click();
-        console.log("found")
-    }else{
-        cy.get('[aria-label="Next page"]').click();
-        console.log("didn't found, clicking next")
-        searchProductOnMainPage(productName)
-    }*/
 }

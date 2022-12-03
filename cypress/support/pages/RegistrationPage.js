@@ -13,6 +13,10 @@ class RegistrationPage extends BasePage{
         return cy.get('#emailControl');
     }
 
+    getInvalidEmailError(){
+        return cy.get('#mat-error-7');
+    }
+
     getPasswordField(){
         return cy.get('#passwordControl');
     }
@@ -55,15 +59,15 @@ class RegistrationPage extends BasePage{
     }
 
     submitRegistrationForm(){
+        cy.log('**Submitting registration form**');
 
         let fakerUser = {
             email: faker.internet.email(),
-            password: faker.internet.password(8), // <- create pass requirements
+            password: faker.internet.password(8),
             securityAnswer: faker.music.songName()
         }
 
         let strUser = JSON.stringify(fakerUser)
-
         console.log(`My Faker user is: (${strUser})`)
 
         this.getEmailField().type(fakerUser.email);
@@ -73,16 +77,34 @@ class RegistrationPage extends BasePage{
         this.clickSecurityQuestionOption();
         this.getSecurityAnswerField().type(fakerUser.securityAnswer);
         this.clickRegisterButton();
-        
-
+    
         //rewrite user.json for further login
         user.email = fakerUser.email;
         user.password = fakerUser.password;
         user.securityAnswer = fakerUser.securityAnswer;
 
         //let strUserJson = JSON.stringify(user)
-        //console.log(`My user.json is (${strUserJson})`)
-        
+        //console.log(`My user.json is (${strUserJson})`) 
+    }
+
+    fillRegistrationFormWithInvalidEmail(){
+        cy.log('**Submitting registration form with invalid email**');
+
+        let wrongUser = {
+            email: "invalid.email",
+            password: faker.internet.password(8),
+            securityAnswer: faker.music.songName()
+        }
+
+        let strUser = JSON.stringify(wrongUser)
+        console.log(`My Faker user is: (${strUser})`)
+
+        this.getEmailField().type(wrongUser.email);
+        this.getPasswordField().type(wrongUser.password);
+        this.getRepeatPasswordField().type(wrongUser.password);
+        this.clickSecurityQuestionField();
+        this.clickSecurityQuestionOption();
+        this.getSecurityAnswerField().type(wrongUser.securityAnswer);
     }
     
 }

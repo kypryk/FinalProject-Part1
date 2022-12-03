@@ -18,18 +18,19 @@ describe('Registration', () => {
     HomePage.openRegistrationPage();
     
     RegistrationPage.submitRegistrationForm();
-
   })
 
-  it.skip('Registration with invalid email', () => {
+  it('Registration with invalid email', () => {
     HomePage.visit();
     HomePage.clickWelcomeBannerDismissButton();
 
     HomePage.openRegistrationPage();
     
-  
-
+    RegistrationPage.fillRegistrationFormWithInvalidEmail();
+    RegistrationPage.getInvalidEmailError().should('contain', "Email address is not valid");
+    RegistrationPage.getRegisterButton().should('be.disabled');
   })
+
 })
 
 describe('Login', () => {
@@ -42,8 +43,9 @@ describe('Login', () => {
     LoginPage.submitLoginForm();
 
     LoginPage.clickNavbarAccountButton();
-    cy.get('[aria-label="Go to user profile"]').should('contain', user.email);
+    LoginPage.getProfileButton().should('contain', user.email);
 
+    cy.log('**Rewrite newly created user in user.json**')
     cy.writeFile('E:/QAAuto/QALightProjects.2nd-try/FinalProject-Part1/cypress/fixtures/user.json', {
       "email": user.email,
       "password": user.password,
@@ -53,16 +55,25 @@ describe('Login', () => {
     })
 
   })
+
+  it('Login with non existent user', () => {
+    HomePage.visit();
+    HomePage.clickWelcomeBannerDismissButton();
+
+    HomePage.openLoginPage();
+
+    LoginPage.submitLoginFormWithNotRegisteredUser();
+
+    LoginPage.getErrorMessage().should('contain', "Invalid email or password")
+  })
+
 })
 
 describe('Order', () => {
 
   it('Making an order', () => {
-    /*cy.setCookie("token", user.token);
-    window.localStorage.setItem('token', user.token);
-    window.localStorage.setItem('email', user.email);*/
 
-    loginViaApi(); //TODO finish adding token and bid in user.json
+    loginViaApi();
 
     HomePage.visit();
     HomePage.clickWelcomeBannerDismissButton();
@@ -88,11 +99,11 @@ describe('Order', () => {
     CheckoutAddressPage.clickPaymentContinueButton();
     CheckoutAddressPage.clickPlaceYourOrderAndPayButton();
     //checking success message
-    CheckoutAddressPage.checkOrderConfirmationMessage();
+    CheckoutAddressPage.getOrderConfirmationMessage().should('contain', "Thank you for your purchase!");
   })
 })
 
-describe.only('Order with helper', () => {
+describe('Order with helper', () => {
   it('Making an order searching it on the homepage', () => {
 
     loginViaApi();
@@ -100,11 +111,31 @@ describe.only('Order with helper', () => {
     HomePage.visit();
     HomePage.clickWelcomeBannerDismissButton();
 
-    //dismissing cookie
-    cy.get('.cc-compliance').click();
+    HomePage.dismissingCookie();
 
-    searchProductOnMainPage("Strawberry Juice (500ml)");
-    
+    let product = "Strawberry Juice (500ml)"
+    searchProductOnMainPage(product);
+
+    HomePage.clickYourBasketButton();
+    BasketPage.getProductInTheBasket().should('contain', product);
+    BasketPage.clickCheckoutButton();
+
+    //adding new address and selecting it
+    CheckoutAddressPage.clickAddNewAddressButton();
+    CheckoutAddressPage.submitAddNewAddressForm();
+    CheckoutAddressPage.clickNewlyCreatedAddressRadioButton();
+    CheckoutAddressPage.clickContinueButton();
+    //selecting Standard Delivery
+    CheckoutAddressPage.clickDeliveryStandardDeliveryRadioButton();
+    CheckoutAddressPage.clickDeliveryContinueButton();
+    //adding and selecting new card
+    CheckoutAddressPage.submitPaymentNewCard();
+    CheckoutAddressPage.clickPaymentCreatedCardRadioButton();
+    CheckoutAddressPage.clickPaymentContinueButton();
+    CheckoutAddressPage.clickPlaceYourOrderAndPayButton();
+    //checking success message
+    CheckoutAddressPage.getOrderConfirmationMessage().should('contain', "Thank you for your purchase!");
+
   })
 })
 
@@ -115,6 +146,16 @@ describe('Contact Us', () => {
     ContactUsPage.clickWelcomeBannerDismissButton();
 
     ContactUsPage.submitContactUsForm();
-    ContactUsPage.checkSubmitContactUsSuccessMessage();
+    ContactUsPage.getSubmitContactUsOutcomeMessage().should('contain', 'Thank you for your feedback.');
+  })
+
+  it('Sending contact us with invalid captcha', () => {
+    ContactUsPage.visit();
+
+    ContactUsPage.clickWelcomeBannerDismissButton();
+
+    ContactUsPage.submitContactUsFormWithInvalidCaptcha();
+    ContactUsPage.getSubmitContactUsOutcomeMessage().should('contain', 'Wrong answer to CAPTCHA. Please try again.');
+    
   })
 })

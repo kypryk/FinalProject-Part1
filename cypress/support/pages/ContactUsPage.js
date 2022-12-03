@@ -33,6 +33,11 @@ class ContactUsPage extends BasePage{
             cy.get('#captchaControl').type(expr);
         })
     }
+
+    typingWrongCaptcha(){
+        cy.log('**Inputting wrong captcha**');
+        cy.get('#captchaControl').type("7");
+    }
     
     /*WRONGcalculateCaptcha(){ // 5*5+7 = 18!!!!!!!
         cy.get('#captcha').invoke('text').then((text) => {
@@ -130,15 +135,19 @@ class ContactUsPage extends BasePage{
         this.selectValue3OnRatingSlider();
         this.calculateCaptcha();
         this.clickSubmitButton();
-        //this.checkSubmitContactUsSuccessMessage()
-        /*cy.get('#submitButton').click().then(() => {
-            cy.get('.cdk-overlay-pane').should('contain', 'Thank you for your feedback.');
-        })*/
     }
 
-    checkSubmitContactUsSuccessMessage(){
-        cy.log('**Checking the success message**');
-        return cy.get('.cdk-overlay-pane').should('contain', 'Thank you for your feedback.');
+    submitContactUsFormWithInvalidCaptcha(){
+        cy.log('**Submitting Contact Us Form With Invalid Captcha**');
+        this.enterValueToCommentField("Test Comment");
+        this.selectValue3OnRatingSlider();
+        this.typingWrongCaptcha();
+        this.clickSubmitButton();
+    }
+
+    getSubmitContactUsOutcomeMessage(){
+        cy.log('**Getting the outcome message**');
+        return cy.get('.cdk-overlay-pane');
     }
 }
 export default new ContactUsPage();

@@ -48,6 +48,7 @@ class CheckoutAdressPage extends BasePage{
     
     //creating new address
     submitAddNewAddressForm(){
+        cy.log('**Submitting Add New Address Form**');
 
         //remember name for further search in saved addresses
         name = faker.name.firstName()
@@ -67,6 +68,7 @@ class CheckoutAdressPage extends BasePage{
     }
 
     clickNewlyCreatedAddressRadioButton(){
+        cy.log('**Selecting newly created address**');
         cy.get(`.mat-row.cdk-row.ng-star-inserted:contains(${name})`).click();
     }
 
@@ -75,6 +77,7 @@ class CheckoutAdressPage extends BasePage{
     }
 
     clickContinueButton(){
+        cy.log('**Continue to payment**');
         cy.get('[aria-label="Proceed to payment selection"]').click();
     }
     
@@ -83,6 +86,7 @@ class CheckoutAdressPage extends BasePage{
     }
 
     clickDeliveryStandardDeliveryRadioButton(){
+        cy.log('**Selecting Standard Delivery**');
         cy.get('.mat-row.cdk-row.ng-star-inserted:contains("Standard Delivery")').click();
     }
 
@@ -91,6 +95,7 @@ class CheckoutAdressPage extends BasePage{
     }
 
     clickDeliveryContinueButton(){
+        cy.log('**Continue from delivery**');
         cy.get('button:contains("Continue")').click();
     }
 
@@ -135,6 +140,7 @@ class CheckoutAdressPage extends BasePage{
     }
     
     submitPaymentNewCard(){
+        cy.log('**Adding a new credit card**');
         this.clickPaymentExpandNewCardButton();
         this.getPaymentNewCardNameField().type(cardFullName); 
         this.getPaymentNewCardNumberField().type(faker.finance.creditCardNumber('4###############'));
@@ -144,19 +150,23 @@ class CheckoutAdressPage extends BasePage{
     }
 
     clickPaymentCreatedCardRadioButton(){
+        cy.log('**Selecting newly added credit card**');
         cy.get(`.mat-row.cdk-row.ng-star-inserted:contains(${cardFullName}) mat-radio-button`).click();
     }
 
     clickPaymentContinueButton(){
+        cy.log('**Continue on payment**');
         cy.get('button[aria-label="Proceed to review"]').click();
     }
 
     clickPlaceYourOrderAndPayButton(){
+        cy.log('**Clicking place your order and pay**');
         cy.get('#checkoutButton').click();
     }
 
-    checkOrderConfirmationMessage(){
-        cy.get('h1[class="confirmation"]').should('contain', "Thank you for your purchase!")
+    getOrderConfirmationMessage(){
+        cy.log('**Getting confirmation message**');
+        return cy.get('h1[class="confirmation"]');
     }
 }
 export default new CheckoutAdressPage();

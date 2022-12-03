@@ -6,6 +6,7 @@ class SearchPage extends BasePage{
     }
     
     clickAddToBasketOnFirstProduct(){
+        cy.log('**Adding product to the basket**');
         cy.get('.mat-grid-tile.ng-star-inserted button').first().click({force: true});
     }
 

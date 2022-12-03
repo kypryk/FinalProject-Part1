@@ -32,9 +32,22 @@ class LoginPage extends BasePage{
     }
     
     submitLoginForm(){
+        cy.log('**Submitting login form**')
         this.getEmailField().type(user.email);
         this.getPasswordField().type(user.password);
         this.clickLoginButton();
+    }
+
+    submitLoginFormWithNotRegisteredUser(){
+        cy.log('**Submitting login form with non-existent user**')
+        this.getEmailField().type("just@some.thing");
+        this.getPasswordField().type(user.password);
+        this.clickLoginButton();
+    }
+
+    getErrorMessage(){
+        cy.log('**Getting error message**')
+        return cy.get('.error.ng-star-inserted');
     }
 
 }
